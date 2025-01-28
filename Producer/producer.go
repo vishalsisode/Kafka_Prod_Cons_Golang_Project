@@ -17,12 +17,11 @@ type Comment struct {
 func main() {
 
 	app := fiber.New()
-	api := app.Group("/api/v1") // /api
+	api := app.Group("/api/v1") /*API Group*/
 
 	api.Post("/comments", createComment)
 
 	app.Listen(":3000")
-
 }
 
 func ConnectProducer(brokersUrl []string) (sarama.SyncProducer, error) {
@@ -80,9 +79,18 @@ func createComment(c *fiber.Ctx) error {
 		})
 		return err
 	}
-	// convert body into bytes and send it to kafka
+	// convert body into bytes and send it to kafka as a serailized ddata
 	cmtInBytes, err := json.Marshal(cmt)
-	PushCommentToQueue("comments", cmtInBytes)
+	if err != nil {
+		log.Println("Error in conversion of body into bytes")
+		return err
+	}
+
+	err = PushCommentToQueue("comments", cmtInBytes)
+	if err != nil {
+		log.Println("Error in conversion of body into bytes")
+		return err
+	}
 
 	// Return Comment in JSON format
 	err = c.JSON(&fiber.Map{

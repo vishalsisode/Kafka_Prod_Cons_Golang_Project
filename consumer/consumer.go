@@ -18,12 +18,12 @@ func main() {
 	}
 
 	// Calling ConsumePartition. It will open one connection per broker
-	// and share it for all partitions that live on it.
+	// and share it for all the partitions that live on it.
 	consumer, err := worker.ConsumePartition(topic, 0, sarama.OffsetOldest)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Consumer started ")
+	fmt.Println("Consumer started")
 	sigchan := make(chan os.Signal, 1)
 	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
 	// Count how many message processed
